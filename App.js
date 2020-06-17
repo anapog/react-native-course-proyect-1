@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, Button } from 'react-native';
 import TimerEntry from './components/TimerEntry';
 import CountDown from './components/CountDown';
 import CountdownControlButton from './components/CountdownControlButton';
+import { vibrate } from './utils';
 
 export default class App extends React.Component {
 	constructor(props) {
@@ -50,15 +51,23 @@ export default class App extends React.Component {
 	}
 
 	decreaseCounter = () => {
-		const countDownFinished = this.state.remainingSeconds <= 0;
-		if (countDownFinished) {
-			this.stopTimer();
-			this.changeTimer();
-			this.startTimer();
-		} else {
+		const isThereTimeLeft = this.state.remainingSeconds > 0;
+		if (isThereTimeLeft) {
 			this.setState({
 				remainingSeconds: this.state.remainingSeconds - 1
 			});
+			
+			this.canVibrate();
+		} else {
+			this.stopTimer();
+			this.changeTimer();
+			this.startTimer();
+		}
+	}
+
+	canVibrate = () => {
+		if (this.state.remainingSeconds === 0) {
+			vibrate();
 		}
 	}
 
