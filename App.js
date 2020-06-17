@@ -20,13 +20,14 @@ export default class App extends React.Component {
 		this.stopTimer();
 	}
 
-	setSeconds = (seconds) => {
-		if (this.state.actualTimer === 'work') {
-			this.setState({workSeconds: seconds});
-		} else {
-			this.setState({breakSeconds: seconds});
+	updateRemainingSeconds = (timerName) => (seconds) => {
+		if (this.state.actualTimer === timerName) {
+			this.setState({remainingSeconds: seconds});
 		}
-		this.setState({remainingSeconds: seconds});
+
+		timerName === 'work' ?
+			this.setState({workSeconds: seconds})
+			: this.setState({breakSeconds: seconds});
 	}
 
 	controlTimer = () => {
@@ -49,13 +50,24 @@ export default class App extends React.Component {
 	}
 
 	decreaseCounter = () => {
-		if (this.state.remainingSeconds <= 0) {
+		const countDownFinished = this.state.remainingSeconds <= 0;
+		if (countDownFinished) {
 			this.stopTimer();
+			this.changeTimer();
+			this.startTimer();
 		} else {
 			this.setState({
 				remainingSeconds: this.state.remainingSeconds - 1
 			});
 		}
+	}
+
+	changeTimer = () => {
+		const newTimer = this.state.actualTimer === 'work' ? 'break' : 'work';
+		this.setState({actualTimer: newTimer});
+
+		const secs = newTimer === 'work' ? this.state.workSeconds : this.state.breakSeconds;
+		this.setState({remainingSeconds: secs});
 	}
 
 	resetTimer = () => {
@@ -80,8 +92,14 @@ export default class App extends React.Component {
 					<Button title="Reset" onPress={this.resetTimer} />
 				</View>
 				<CountDown time={this.state.remainingSeconds}/>
-				<TimerEntry title='Work timer:' onChange={this.setSeconds}/>
-				<TimerEntry title='Break timer:' onChange={this.setSeconds}/>
+				<TimerEntry 
+					title='Work timer:' 
+					onChange={this.updateRemainingSeconds('work')}
+				/>
+				<TimerEntry 
+					title='Break timer:' 
+					onChange={this.updateRemainingSeconds('break')}
+				/>
 			</View>
 		);
 	}

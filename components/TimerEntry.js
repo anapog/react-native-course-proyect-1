@@ -10,16 +10,21 @@ export default class TimerEntry extends React.Component {
 		}
 	}
 
-	setMinutes = async minutes => {
+	setMinutes = async (minutes) => {
 		this.checkInputValidity(+minutes)
 		await this.setState({minutes: +minutes});
-		this.props.onChange(this.state.minutes*60 + this.state.seconds);
+		this.updateRemainingSeconds();
 	}
 
-	setSeconds = async seconds => {
+	setSeconds = async (seconds) => {
 		this.checkInputValidity(+seconds)
 		await this.setState({seconds: +seconds});
-		this.props.onChange(this.state.minutes*60 + this.state.seconds);
+		this.updateRemainingSeconds();
+	}
+
+	updateRemainingSeconds = () => {
+		const secs = this.state.minutes*60 + this.state.seconds;
+		this.props.onChange(secs);
 	}
 
 	checkInputValidity = (num) => {
