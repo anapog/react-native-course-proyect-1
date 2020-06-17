@@ -29,6 +29,7 @@ export default class App extends React.Component {
 				<Text style={[styles.bigFontSize, styles.bold]}>
 					{this.state.actualTimer.toUpperCase()} TIMER
 				</Text>
+				<CountDown time={this.state.remainingSeconds}/>
 				<TimerEntry title='Work timer:' onChange={this.setSeconds}/>
 				<TimerEntry title='Break timer:' onChange={this.setSeconds}/>
 			</View>
